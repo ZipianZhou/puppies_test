@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+<h1> Create Post Page</h1>
+<form action='' method="POST" enctype="multipart/form-data">
+{%csrf_token%}
+{{form.as_p}}
+<button>Submit</button>
+</form>
+</body></html>
