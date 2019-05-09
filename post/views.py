@@ -3,6 +3,10 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.urls import reverse 
 from .forms import PostForm
 from .models import Post
+from django.contrib.auth.models import User
+from post.serializers import UserSerializer
+from rest_framework import generics
+from rest_framework import permissions
 
 # Create your views here.
 
@@ -19,11 +23,19 @@ class AddPost(CreateView):
 class PostList(ListView):
     model = Post 
     template_name = 'post_list.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 class PostDetail(DetailView):
     model = Post
     template_name =  'post_detail.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
 
 
-
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     

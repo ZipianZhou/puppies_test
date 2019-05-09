@@ -5,7 +5,7 @@ from django.db import models
 class Post (models.Model):
     title = models.TextField()
     cover = models.TextField()
-    owner = models.ForeignKey('auth.User',on_delete=models.CASCADE)
+    owner = models.ForeignKey('auth.User',related_name='userid',on_delete=models.CASCADE)
     def __str__(self):
         return self.title
     
