@@ -11,3 +11,11 @@ class Post (models.Model):
     
     def get_absolute_url(self):
         return '/loggedin/post/'+ str(self.id)
+
+class Like(models.Model):
+
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    
+

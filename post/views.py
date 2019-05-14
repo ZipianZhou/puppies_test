@@ -2,7 +2,7 @@ from django.shortcuts import render,HttpResponse
 from django.views.generic import ListView, CreateView, DetailView
 from django.urls import reverse_lazy 
 from .forms import PostForm
-from .models import Post
+from .models import Post, Like
 from django.contrib.auth.models import User
 from post.serializers import UserSerializer
 from rest_framework import generics
@@ -13,6 +13,7 @@ from rest_framework import permissions
 # def post(request):
 
 #     return HttpResponse('POST picture')
+
 class AddPost(CreateView):
     model = Post
     form_class = PostForm
@@ -21,15 +22,17 @@ class AddPost(CreateView):
 
     def form_valid(self,form):
         form.instance.owner = self.request.user
-        breakpoint()
         return super().form_valid(form)
 
-
+class LikeList(ListView):
+    model = Like
+    template_name = "post_detail.html"
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    
 class PostList(ListView):
     model = Post 
     template_name = 'post_list.html'
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
 
 class PostDetail(DetailView):
     model = Post
@@ -45,4 +48,12 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
+
+
+
+def like(request, pk):
+    user = request.user
+    post = Post.objects.filter(id=pk).first()
+    Like.objects.create(post=post, user=user)
+
+    return HttpResponse(PostList.as_view())
