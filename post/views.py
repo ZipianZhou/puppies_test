@@ -14,6 +14,7 @@ from rest_framework import permissions
 
 #     return HttpResponse('POST picture')
 
+
 class AddPost(CreateView):
     model = Post
     form_class = PostForm
@@ -31,6 +32,11 @@ class LikeList(ListView):
     
 class PostList(ListView):
     model = Post 
+    template_name = 'post_list.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+class LikeCount(ListView):
+    model = Like
     template_name = 'post_list.html'
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
@@ -54,6 +60,11 @@ class UserDetail(generics.RetrieveAPIView):
 def like(request, pk):
     user = request.user
     post = Post.objects.filter(id=pk).first()
-    Like.objects.create(post=post, user=user)
+    
+    like_obj,created=Like.objects.get_or_create(post=post, user=user)
+
+
+    if not created:
+       like_obj.delete()
 
     return HttpResponse(PostList.as_view())
