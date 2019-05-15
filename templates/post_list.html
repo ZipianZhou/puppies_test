@@ -9,14 +9,12 @@
     {% for post in post_list %}
       <li>
         <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>({{post.owner}})
-        {% if post.like_set.filter(user=request.user) %}
-          <button name="like_click" id="like_click_{{post.id}}">Liked {{post.like_set.all.count}}</button>
-        <!-- <input type="button" name="like_click" id="like_click_{{post.id}}" value='Like' onclick="if(this.value=='Like') { this.value='Dislike'; } else { this.value='Like'; }"/> -->
-        {% endif %}
+        {% if post.id in liked_post %}
+          <button name="like_click" id="like_click_{{post.id}}">Dislike {{post.like_set.all.count}}</button>
         {% else %}
-        <button name="like_click" id="like_click_{{post.id}}">Like {{post.like_set.all.count}}</button>
-        {%e endelse%}
-      </li>
+          <button name="like_click"  onclick="location.reload()" id="like_click_{{post.id}}">Like {{post.like_set.all.count}}</button>
+        {% endif %}
+        </li>
      
     {% endfor %}
   </ul>
@@ -32,10 +30,10 @@
   $('button[id^="like_click"]').click(e => {
     let id = e.target.id.split("_")[2];
     alert(id);
+    location.reload();
     let body = {
       post_id: id
     } 
-    location.reload();
     axios({
       method: 'post',
       url: '/loggedin/post/like/' + id,
@@ -45,8 +43,10 @@
     }).catch(e => {
       console.log(e);
     });
+    location.reload();
    
   });
+  
 </script>
 
 <html>

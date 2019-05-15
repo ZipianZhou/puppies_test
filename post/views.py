@@ -7,13 +7,7 @@ from django.contrib.auth.models import User
 from post.serializers import UserSerializer
 from rest_framework import generics
 from rest_framework import permissions
-
-# Create your views here.
-
-# def post(request):
-
-#     return HttpResponse('POST picture')
-
+from itertools import chain
 
 class AddPost(CreateView):
     model = Post
@@ -24,7 +18,7 @@ class AddPost(CreateView):
     def form_valid(self,form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
-
+        
 class LikeList(ListView):
     model = Like
     template_name = "post_detail.html"
@@ -33,7 +27,18 @@ class LikeList(ListView):
 class PostList(ListView):
     model = Post 
     template_name = 'post_list.html'
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,) 
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        l=[]
+        m = list(Like.objects.filter(user=self.request.user).values('post')) 
+
+        for i in m:
+            l.append(i.get('post'))
+
+        context['liked_post'] = l
+        return context
 
 class LikeCount(ListView):
     model = Like
@@ -68,3 +73,10 @@ def like(request, pk):
        like_obj.delete()
 
     return HttpResponse(PostList.as_view())
+
+
+def index(request):
+    user = request.user
+    like_post = Like.objects.filter(user=user).values('post__id')
+    return HttpResponse(list(like_post))
+    
