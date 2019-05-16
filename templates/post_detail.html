@@ -6,7 +6,8 @@
   
   <h1>{{post.title}} </h1>
   
-  <h1>{{post.cover}}</h1>
+  <!-- <h1>{{post.cover}}</h1> -->
+  <img src="{{ post.cover.url}}" alt="{{ post.title }}">
   <!-- <h1>{{post.owner}}</h1> -->
   <h3>Number of Likes: {{post.like_set.all.count}}</h3>
   <h3>Users who like it:</h3>

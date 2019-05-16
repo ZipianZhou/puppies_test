@@ -9,6 +9,8 @@
     {% for post in post_list %}
       <li>
         <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>({{post.owner}})
+        <br>
+        <img src="{{ post.cover.url}}" alt="{{ post.title }}">
         {% if post.id in liked_post %}
           <button name="like_click" id="like_click_{{post.id}}">Dislike {{post.like_set.all.count}}</button>
         {% else %}
