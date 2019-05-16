@@ -8,8 +8,16 @@
   <ul>
     {% for post in post_list %}
       <li>
-        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a> ({{post.owner}})
-      </li>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>({{post.owner}})
+        <br>
+        <img src="{{ post.cover.url}}" alt="{{ post.title }}">
+        {% if post.id in liked_post %}
+          <button name="like_click" id="like_click_{{post.id}}">Dislike {{post.like_set.all.count}}</button>
+        {% else %}
+          <button name="like_click"  onclick="location.reload()" id="like_click_{{post.id}}">Like {{post.like_set.all.count}}</button>
+        {% endif %}
+        </li>
+     
     {% endfor %}
   </ul>
   {% else %}
@@ -17,4 +25,30 @@
   {% endif %}       
 {% endblock %}
 </body>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.0/axios.js"></script>
+<script>
+  $('button[id^="like_click"]').click(e => {
+    let id = e.target.id.split("_")[2];
+    alert(id);
+    location.reload();
+    let body = {
+      post_id: id
+    } 
+    axios({
+      method: 'post',
+      url: '/loggedin/post/like/' + id,
+      data: body
+    }).then(response => {
+      console.log(response);
+    }).catch(e => {
+      console.log(e);
+    });
+    location.reload();
+   
+  });
+  
+</script>
+
 <html>

@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'puppies',
     'post',
     'rest_framework',
-    # 'post.apps.PostConfig'
 ]
 
 MIDDLEWARE = [
@@ -121,5 +120,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/loggedin/post/'
-# 
 LOGIN_URL='/api-auth/login/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
