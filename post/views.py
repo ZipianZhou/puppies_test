@@ -5,8 +5,7 @@ from .forms import PostForm
 from .models import Post, Like
 from django.contrib.auth.models import User
 from post.serializers import UserSerializer
-from rest_framework import generics
-from rest_framework import permissions
+from rest_framework import generics,permissions
 from itertools import chain
 
 class AddPost(CreateView):
@@ -27,6 +26,7 @@ class LikeList(ListView):
 class PostList(ListView):
     model = Post 
     template_name = 'post_list.html'
+
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,) 
 
     def get_context_data(self,**kwargs):
@@ -50,7 +50,6 @@ class PostDetail(DetailView):
     template_name =  'post_detail.html'
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-
 class UserList(generics.ListAPIView):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -59,8 +58,6 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-
 
 def like(request, pk):
     user = request.user
@@ -74,9 +71,9 @@ def like(request, pk):
 
     return HttpResponse(PostList.as_view())
 
-
 def index(request):
     user = request.user
     like_post = Like.objects.filter(user=user).values('post__id')
     return HttpResponse(list(like_post))
+
     
